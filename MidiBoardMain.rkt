@@ -16,7 +16,122 @@
 ;tempo - how fast the metronome moves in bpm (needs to convert from frames per second)
 (define-struct ms (volume pressed? octave kit record? recordlength rate tempo))
 
+;========================================================================
+(define (RENDER ms)
+  (place-image 
+   (overlay/offset (rectangle 2000 300 "solid" "black")
+                   200
+                   300
+                   
+   (overlay/xy
+            (beside
+              (rectangle 67.5 210.825 "outline" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 0) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  )
+                         )
 
+              (rectangle 67.5 210.825 "outline" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 2) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  )
+                         )
+                   (rectangle 67.5 210.825 "outline" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 4) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  )
+                              )
+                   (rectangle 67.5 210.825 "outline" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 5) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  )
+                              )
+                   (rectangle 67.5 210.825 "outline" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 7) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  )
+                              )
+                   (rectangle 67.5 210.825 "outline" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 9) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  )
+                              )
+                   (rectangle 67.5 210.825 "outline" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 11) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  )
+                              )     
+            35
+            0           
+             (beside
+                     (rectangle 43.5 140.5485 "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 1) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  ))
+                     (rectangle 34.5 140.5485  "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 2) #t)
+                                                  "red"]
+                                                  [else "white"]
+                                                  ))
+                     (rectangle 43.5 140.5485 "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 3) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  ))
+                     (rectangle 37.5 140.5485  "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 4) #t)
+                                                  "red"]
+                                                  [else "white"]
+                                                  ))
+                     (rectangle 37.5 140.5485  "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 5) #t)
+                                                  "red"]
+                                                  [else "white"]
+                                                  ))
+                     (rectangle 43.5 140.5485 "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 6) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  ))
+                     (rectangle 34.5 140.5485  "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 7) #t)
+                                                  "red"]
+                                                  [else "white"]
+                                                  ))
+                     (rectangle 43.5 140.5485  "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 8) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  ))
+                     (rectangle 34.5 140.5485  "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 9) #t)
+                                                  "red"]
+                                                  [else "white"]
+                                                  ))
+                     (rectangle 43.5 140.5485  "solid" (cond
+                                                  [(equal? (list-ref (ms-pressed? ms) 10) #t)
+                                                  "red"]
+                                                  [else "black"]
+                                                  )) 
+                      )
+              )
+        )
+            200
+            200
+            (empty-scene 750 500)
+      )
+  )
+  )
+
+;=======================================================
 
 
 ;kit is a structure from the worldstate that includes
