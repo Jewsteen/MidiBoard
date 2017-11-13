@@ -3,6 +3,7 @@
 #reader(lib "htdp-intermediate-reader.ss" "lang")((modname MidiBoardMain) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 (require rsound)
 (require 2htdp/universe)
+(require 2htdp/image)
 
 ;ms is a world state
 ;ms includes
@@ -17,6 +18,10 @@
 (define-struct ms (volume pressed? octave kit record? recordlength rate tempo))
 
 ;========================================================================
+;defining function RENDER which takes a ms
+;ms -> ms
+;function toggles keys based on the keytracker function to appear red when a button is pressed
+
 (define (RENDER ms)
   (place-image 
    (overlay/offset (rectangle 2000 300 "solid" "black")
