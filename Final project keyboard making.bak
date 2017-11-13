@@ -1,0 +1,37 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname |Final project keyboard making|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require rsound)
+(require 2htdp/universe)
+(require 2htdp/image)
+
+;defining a function that draws the base world state for ms
+(define (RENDER y)
+  (place-image 
+           (overlay/xy
+            (beside
+                   (rectangle 45 140.55 "outline" "black")
+                   (rectangle 45 140.55 "outline" "black")
+                   (rectangle 45 140.55 "outline" "black")
+                   )
+            20
+            0            
+            (beside
+                     (rectangle 27 93.699 "solid" "black")
+                     (rectangle 18 93.699  "solid" "white")
+                     (rectangle 25 93.699  "solid" "black")
+                     (rectangle 20 93.699  "solid" "white")
+                     (rectangle 25 93.699  "solid" "black")
+                     
+                     )
+                    )
+            375
+            400
+                                   (empty-scene 750 500)
+         )
+               )
+(define (main y)
+  (big-bang y
+  [to-draw RENDER]
+  ))
+(main #t)
