@@ -19,11 +19,9 @@
 (define-struct ms (volume pressed? Plength octave kit record? recordlength rate tempo))
 
 ;========================================================================
-;defining function RENDER which takes a ms
-;ms -> ms
-;function toggles keys based on the keytracker function to appear red when a button is pressed
-
-
+;colorKey outputs a rectangle color based on what it's original color was
+;and whether it's currently pressed or not
+; WorldState(ms) number number -> string
 (define (colorKey ws index col)
   (cond
     [(equal? 1 col ) 
@@ -39,6 +37,9 @@
     [else "green"] 
     ))
 
+;defining function RENDER which takes a ms
+;ms -> ms
+;function toggles keys based on the keytracker function to appear red when a button is pressed
 (define (RENDER ms)
   (place-image 
    (overlay/offset (rectangle 2000 300 "solid" "black")
@@ -117,9 +118,14 @@
 
 ;(define-struct ms (volume pressed? Plength octave kit record? recordlength rate tempo))
 
+
+;oppBool creates a new pressed? list and outputs a new world state
+;with an opposite boolean value at the given index
+; WorldState(ms) number -> WorldState(ms)
 (define (oppBool ws index)
   (make-ms (ms-volume ws) (list-set (ms-pressed? ws) index (not(list-ref (ms-pressed? ws) index )) ) (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws))
   )
+
 ;(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 0) one)
 
 ;keytracker is a function that maps midi notes to keys based on the octave and produces a make-tone
