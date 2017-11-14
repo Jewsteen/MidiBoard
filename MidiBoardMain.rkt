@@ -86,7 +86,7 @@
 
 ;test variables defined for you guessed it, testing
 (define testkit (make-kit "vgame" 50))
-(define test (make-ms .5 '(#f #f #f #t #f #f #f #f #f #f #f #f #f) '(-1 -1 -1 48000 -1 -1 -1 -1 -1 -1 -1 -1 -1) 0 testkit #f 0 1 0))
+(define test (make-ms .8 '(#f #f #f #f #f #f #f #f #f #f #f #f #f) '(-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1) 4 testkit #f 0 1 0))
 (define one 44100)
 
 
@@ -105,8 +105,6 @@
 ;worldstate index -> midi
 (define (selector world index)
   (list-ref (octavator (ms-octave world)) index)
-
-
 )
 
 ;(check-expect (selector test 0) 0)
@@ -123,7 +121,17 @@
 ;with an opposite boolean value at the given index
 ; WorldState(ms) number -> WorldState(ms)
 (define (oppBool ws index)
-  (make-ms (ms-volume ws) (list-set (ms-pressed? ws) index (not(list-ref (ms-pressed? ws) index )) ) (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws))
+  (make-ms (ms-volume ws)
+           (list-set (ms-pressed? ws) index (not(list-ref (ms-pressed? ws) index )) )
+
+           (list-set (ms-Plength ws) index
+                    (cond
+                     [(equal? -1 (list-ref (ms-Plength ws) index )) 0]
+                     [else -1]
+                     )
+                    )
+           
+           (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws))
   )
 
 ;(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 0) one)
@@ -151,14 +159,34 @@
 ;(check-expect (keytracker test "f") (synth-note "vgame" 50 5 44100))
 
 
-(define (tock y)y )
+(define (sound_list pressed world start)
+  (cond
+    [(empty? pressed) (silence 1)]
+    [else
+    (cond
+       [(= (length (ms-pressed? world)) (+ start 1)) '()]
+      [(equal? #f (first (ms-pressed? world))) (cons (silence 1) (sound_list (rest pressed) world (+ start 1)))]
+      ; [(equal? -1 (first (ms-Plength world))) (cons (silence 1) (sound_list (rest pressed) world (+ start 1)))]
+       [else (cons (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world start) 48000) (sound_list (rest pressed) world (+ start 1)))]
+     )
+    ]
+    )
+ )
+
+
+(define (tock y)
+  (andplay (rs-scale  (ms-volume y) (rs-overlay* (sound_list (ms-pressed? y) y 0)))
+        (make-ms (ms-volume y) (ms-pressed? y) (ms-Plength y) (ms-octave y) (ms-kit y) (ms-record? y) (ms-recordlength y) (ms-rate y) (ms-tempo y)))
+)
 
 
 (define (Midi y)
     (big-bang y
-              [on-tick tock 0.5]     
+              [on-tick tock 1]     
               [to-draw RENDER]
               [on-key keytracker]
+              [on-release keytracker]
               )
     )
 
+(Midi test)
