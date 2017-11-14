@@ -4,6 +4,7 @@
 (require rsound)
 (require 2htdp/universe)
 (require 2htdp/image)
+(require racket/list)
 
 ;ms is a world state
 ;ms includes
@@ -15,7 +16,7 @@
 ;recordlength - frames long of the recording
 ;rate - a multiplier of how fast soundws are played
 ;tempo - how fast the metronome moves in bpm (needs to convert from frames per second)
-(define-struct ms (volume pressed? octave kit record? recordlength rate tempo))
+(define-struct ms (volume pressed? Plength octave kit record? recordlength rate tempo))
 
 ;========================================================================
 ;defining function RENDER which takes a ms
@@ -146,7 +147,7 @@
 
 ;test variables defined for you guessed it, testing
 (define testkit (make-kit "vgame" 50))
-(define test (make-ms .5 #t 0 testkit #f 0 1 0))
+(define test (make-ms .5 '(#f #f #f #t #f #f #f #f #f) '(-1 -1 -1 48000 -1 -1 -1 -1 -1) 0 testkit #f 0 1 0))
 (define one 44100)
 
 
@@ -173,52 +174,36 @@
 ;(check-expect (selector test 11) 11)
 
 
+; Creates a new world state with the opposite boolean value at a given index in 
+; WorldState number -> Worldstate
+
+;(define-struct ms (volume pressed? Plength octave kit record? recordlength rate tempo))
+
+(define (oppBool ws index)
+  (make-ms (ms-volume ws) (list-set (ms-pressed? ws) index (not(list-ref (ms-pressed? ws) index )) ) (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws))
+  )
+;(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 0) one)
+
 ;keytracker is a function that maps midi notes to keys based on the octave and produces a make-tone
 ;worldstate key -> rsound
 (define (keytracker world key)
-  (cond [(key=? "a" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 0) one)]
-        [(key=? "w" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 1) one)]
-        [(key=? "s" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 2) one)]
-        [(key=? "e" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 3) one)]
-        [(key=? "d" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 4) one)]
-        [(key=? "f" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 5) one)]
-        [(key=? "t" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 6) one)]
-        [(key=? "g" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 7) one)]
-        [(key=? "y" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 8) one)]
-        [(key=? "h" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 9) one)]
-        [(key=? "u" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 10) one)]
-        [(key=? "j" key)  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 11) one)]
+  (cond [(key=? "a" key)  (oppBool world 0)]
+        [(key=? "w" key)  (oppBool world 1)]
+        [(key=? "s" key)  (oppBool world 2)]
+        [(key=? "e" key)  (oppBool world 3)]
+        [(key=? "d" key)  (oppBool world 4)]
+        [(key=? "f" key)  (oppBool world 5)]
+        [(key=? "t" key)  (oppBool world 6)]
+        [(key=? "g" key)  (oppBool world 7)]
+        [(key=? "y" key)  (oppBool world 8)]
+        [(key=? "h" key)  (oppBool world 9)]
+        [(key=? "u" key)  (oppBool world 10)]
+        [(key=? "j" key)  (oppBool world 11)]
 )
   )
 
 ;(kit-kitname (ms-kit test))
 ;(check-expect (keytracker test "f") (synth-note "vgame" 50 5 44100))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
