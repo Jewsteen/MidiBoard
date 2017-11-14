@@ -23,119 +23,57 @@
 ;ms -> ms
 ;function toggles keys based on the keytracker function to appear red when a button is pressed
 
+
+(define (colorKey ws index col)
+  (cond
+    [(equal? 1 col ) 
+    (cond
+      [(equal? (list-ref (ms-pressed? ws) index) #t) "red"]
+      [else "black"])
+    ]
+    [(equal? 0 col)
+     (cond
+      [(equal? (list-ref (ms-pressed? ws) index) #t) "red"]
+      [else "white"])
+    ]
+    [else "green"] 
+    ))
+
 (define (RENDER ms)
   (place-image 
    (overlay/offset (rectangle 2000 300 "solid" "black")
                    200
-                   300
-                   
+                   300               
    (overlay/xy
             (beside
-              (rectangle 67.5 210.825 "outline" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 0) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  )
-                         )
-
-              (rectangle 67.5 210.825 "outline" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 2) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  )
-                         )
-                   (rectangle 67.5 210.825 "outline" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 4) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  )
-                              )
-                   (rectangle 67.5 210.825 "outline" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 5) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  )
-                              )
-                   (rectangle 67.5 210.825 "outline" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 7) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  )
-                              )
-                   (rectangle 67.5 210.825 "outline" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 9) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  )
-                              )
-                   (rectangle 67.5 210.825 "outline" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 11) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  )
-                              )     
+              (rectangle 67.5 210.825 "outline" (colorKey ms 0 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 2 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 4 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 5 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 7 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 9 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 11 1)))     
             35
             0           
              (beside
-                     (rectangle 43.5 140.5485 "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 1) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  ))
-                     (rectangle 34.5 140.5485  "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 2) #t)
-                                                  "red"]
-                                                  [else "white"]
-                                                  ))
-                     (rectangle 43.5 140.5485 "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 3) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  ))
-                     (rectangle 37.5 140.5485  "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 4) #t)
-                                                  "red"]
-                                                  [else "white"]
-                                                  ))
-                     (rectangle 37.5 140.5485  "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 5) #t)
-                                                  "red"]
-                                                  [else "white"]
-                                                  ))
-                     (rectangle 43.5 140.5485 "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 6) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  ))
-                     (rectangle 34.5 140.5485  "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 7) #t)
-                                                  "red"]
-                                                  [else "white"]
-                                                  ))
-                     (rectangle 43.5 140.5485  "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 8) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  ))
-                     (rectangle 34.5 140.5485  "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 9) #t)
-                                                  "red"]
-                                                  [else "white"]
-                                                  ))
-                     (rectangle 43.5 140.5485  "solid" (cond
-                                                  [(equal? (list-ref (ms-pressed? ms) 10) #t)
-                                                  "red"]
-                                                  [else "black"]
-                                                  )) 
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1))
+                     (rectangle 34.5 140.5485  "solid" (colorKey ms 2 0))
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))
+                     (rectangle 37.5 140.5485  "solid" (colorKey ms 4 0))
+                     (rectangle 37.5 140.5485  "solid" (colorKey ms 5 0))
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))
+                     (rectangle 34.5 140.5485  "solid" (colorKey ms 7 0))
+                     (rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))
+                     (rectangle 34.5 140.5485  "solid" (colorKey ms 9 0))
+                     (rectangle 43.5 140.5485  "solid" (colorKey ms 10 1)) 
                       )
-              )
-        )
+              ))
             200
             200
             (empty-scene 750 500)
       )
   )
-  )
+  
 
 ;=======================================================
 
@@ -147,7 +85,7 @@
 
 ;test variables defined for you guessed it, testing
 (define testkit (make-kit "vgame" 50))
-(define test (make-ms .5 '(#f #f #f #t #f #f #f #f #f) '(-1 -1 -1 48000 -1 -1 -1 -1 -1) 0 testkit #f 0 1 0))
+(define test (make-ms .5 '(#f #f #f #t #f #f #f #f #f #f #f #f #f) '(-1 -1 -1 48000 -1 -1 -1 -1 -1 -1 -1 -1 -1) 0 testkit #f 0 1 0))
 (define one 44100)
 
 
@@ -199,6 +137,7 @@
         [(key=? "h" key)  (oppBool world 9)]
         [(key=? "u" key)  (oppBool world 10)]
         [(key=? "j" key)  (oppBool world 11)]
+        [else (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
 )
   )
 
@@ -206,4 +145,14 @@
 ;(check-expect (keytracker test "f") (synth-note "vgame" 50 5 44100))
 
 
+(define (tock y)y )
+
+
+(define (Midi y)
+    (big-bang y
+              [on-tick tock 0.5]     
+              [to-draw RENDER]
+              [on-key keytracker]
+              )
+    )
 
