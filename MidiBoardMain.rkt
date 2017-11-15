@@ -51,28 +51,29 @@
                    300               
    (overlay/xy
             (beside
-              (rectangle 67.5 210.825 "outline" (colorKey ms 0 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 2 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 4 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 5 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 7 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 9 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 11 1)))     
+              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 0 1)) 20 140 (text "C" 40 "black"))
+              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 2 1)) 20 140 (text "D" 40 "black"))
+              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 4 1)) 20 140 (text "E" 40 "black"))
+              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 5 1)) 20 140 (text "F" 40 "black"))
+              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 7 1)) 20 140 (text "G" 40 "black"))
+              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 9 1)) 20 140 (text "A" 40 "black"))
+              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 11 1))20 140 (text "B" 40 "black"))
+              (overlay/xy (rectangle 67.5 210.825 "outline" "BlAcK")20 140 (text "C" 40 "black")))     
             0
             0
      ;For this set of rectangles, all rectangles with col == 0 will turn red for the corresponding white key
              (beside
                      (rectangle 35 140.5485 "solid" (colorKey ms 0 0))
-                     (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1))
+                     (underlay/xy (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1)) 0 60 (text "C#" 20 "white"))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 2 0))
-                     (rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))
+                     (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))0 60 (text "D#" 20 "white"))
                      (rectangle 37.5 140.5485  "solid" (colorKey ms 4 0))
                      (rectangle 37.5 140.5485  "solid" (colorKey ms 5 0))
-                     (rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))
+                     (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))0 60 (text "F#" 20 "white"))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 7 0))
-                     (rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))
+                     (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))0 60 (text "G#" 20 "white"))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 9 0))
-                     (rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))
+                     (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))0 60 (text "A#" 20 "white"))
                      (rectangle 35 140.5485 "solid" (colorKey ms 11 0))
                       )
               ))
