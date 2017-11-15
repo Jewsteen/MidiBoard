@@ -86,7 +86,7 @@
 
 ;test variables defined for you guessed it, testing
 (define testkit (make-kit "vgame" 50))
-(define test (make-ms .8 '(#f #f #f #f #f #f #f #f #f #f #f #f #f) '(-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1) 4 testkit #f 0 1 0))
+(define test (make-ms .8 '(#f #f #f #f #f #f #f #f #f #f #f #f #f) '(-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1) 6 testkit #f 0 1 0))
 (define one 44100)
 
 
@@ -159,9 +159,9 @@
 ;(check-expect (keytracker test "f") (synth-note "vgame" 50 5 44100))
 
 
-(define (sound_list pressed world start)
-  (cond
-    [(empty? pressed) (silence 1)]
+(define (scon world index)
+ #| (cond
+    [(empty? pressed) '()]
     [else
     (cond
        [(= (length (ms-pressed? world)) (+ start 1)) '()]
@@ -170,19 +170,22 @@
        [else (cons (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world start) 48000) (sound_list (rest pressed) world (+ start 1)))]
      )
     ]
-    )
- )
+    ) |#
+  (cond
+    [(list-ref (ms-pressed? world) index)(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world index) 24000) ]
+    [else (silence 1)]
+ ))
 
 
 (define (tock y)
-  (andplay (rs-scale  (ms-volume y) (rs-overlay* (sound_list (ms-pressed? y) y 0)))
+  (andplay (rs-scale  (ms-volume y) (rs-overlay* (list (scon y 0)(scon y 1)(scon y 2)(scon y 3)(scon y 4)(scon y 5)(scon y 6)(scon y 7)(scon y 8)(scon y 10)(scon y 11) )))
         (make-ms (ms-volume y) (ms-pressed? y) (ms-Plength y) (ms-octave y) (ms-kit y) (ms-record? y) (ms-recordlength y) (ms-rate y) (ms-tempo y)))
 )
 
 
 (define (Midi y)
     (big-bang y
-              [on-tick tock 1]     
+              [on-tick tock 0.5]     
               [to-draw RENDER]
               [on-key keytracker]
               [on-release keytracker]
