@@ -42,7 +42,8 @@
 ;function toggles keys based on the keytracker function to appear red when a button is pressed
 (define (RENDER ms)
   (place-image 
-   (overlay/offset (rectangle 2000 300 "solid" "black")
+   (underlay/offset
+    (overlay/offset (rectangle 2000 300 "solid" "black")
                    200
                    300               
    (overlay/xy
@@ -54,9 +55,11 @@
               (rectangle 67.5 210.825 "outline" (colorKey ms 7 1))
               (rectangle 67.5 210.825 "outline" (colorKey ms 9 1))
               (rectangle 67.5 210.825 "outline" (colorKey ms 11 1)))     
-            35
-            0           
+            0
+            0
+     ;For this set of rectangles, all rectangles with col == 0 will turn red for the corresponding white key
              (beside
+                     (rectangle 35 140.5485 "solid" (colorKey ms 0 0))
                      (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 2 0))
                      (rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))
@@ -66,9 +69,31 @@
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 7 0))
                      (rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 9 0))
-                     (rectangle 43.5 140.5485  "solid" (colorKey ms 10 1)) 
+                     (rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))
+                     (rectangle 35 140.5485 "solid" (colorKey ms 11 0))
                       )
               ))
+    200
+    -100
+    (overlay/xy
+     (beside
+                 (rectangle 100 50 "solid" "purple")
+                 (rectangle 100 50 "solid" "black")
+                 (rectangle 100 50 "solid" "purple")
+                 (rectangle 100 50 "solid" "black")
+                 (rectangle 100 50 "solid" "purple")
+          )
+     0
+     -100
+     (beside
+                 (rectangle 100 50 "solid" "purple")
+                 (rectangle 100 50 "solid" "black")
+                 (rectangle 100 50 "solid" "purple")
+                 (rectangle 100 50 "solid" "black")
+                 (rectangle 100 50 "solid" "purple")
+          )
+     )
+    )
             200
             200
             (empty-scene 750 500)
