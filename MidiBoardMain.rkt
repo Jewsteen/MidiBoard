@@ -24,6 +24,7 @@
 ; WorldState(ms) number number -> string
 (define (colorKey ws index col)
   (cond
+   
     [(equal? 1 col ) 
     (cond
       [(equal? (list-ref (ms-pressed? ws) index) #t) "red"]
@@ -36,6 +37,8 @@
     ]
     [else "green"] 
     ))
+
+
 
 ;defining function RENDER which takes a ms
 ;ms -> ms
@@ -161,6 +164,10 @@
 
 ;(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 0) one)
 
+;Octav takes in a worldstate and a number
+;then changes or doesn't change the octave based on the current world
+;eithering increasing or decreasing the octave
+;WorldState(ms) Number -> WorldState(ms)
 (define (octav world funct)
   (cond
     [(and (equal? 0 (ms-octave world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
@@ -173,6 +180,10 @@
                      (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
 ))
 
+;Vol takes in a worldstate and a number
+;then changes or doesn't change the volume based on the current world
+;eithering increasing or decreasing the volume
+;WorldState(ms) Number -> WorldState(ms)
 (define (vol world funct)
   (cond
     [(and (equal? 1 (ms-octave world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
@@ -203,6 +214,8 @@
         [(key=? "j" key)  (oppBool world 11)]
         [(key=? "[" key) (octav world 0) ]
         [(key=? "]" key) (octav world 1) ]
+         [(key=? "[" key) (octav world 0) ]
+        [(key=? "]" key) (octav world 1) ]
         [(key=? "-" key) (vol world 0) ]
         [(key=? "=" key) (vol world 1) ]
         [(key=? "escape" key) (exit) ]
@@ -214,6 +227,9 @@
 ;(check-expect (keytracker test "f") (synth-note "vgame" 50 5 44100))
 
 
+;Scon takes in a world and a number
+; then returns a synth note or silence based on whether or not a piano key is being pressed
+; WorldState(ms) Number -> WorldState(ms)
 (define (scon world index)
  #| (cond
     [(empty? pressed) '()]
@@ -231,6 +247,9 @@
     [else (silence 1)]
  ))
 
+;Tock takes in a WorldState and plays a sound and or silence
+;Based on the WorldState
+;WorldState -> WorldState
 (define (tock y)
   (andplay (rs-scale  (ms-volume y) (rs-overlay* (list (scon y 0)(scon y 1)(scon y 2)(scon y 3)(scon y 4)(scon y 5)(scon y 6)(scon y 7)(scon y 8)(scon y 9)(scon y 10)(scon y 11) )))
         (make-ms (ms-volume y) (ms-pressed? y) (ms-Plength y) (ms-octave y) (ms-kit y) (ms-record? y) (ms-recordlength y) (ms-rate y) (ms-tempo y)))
