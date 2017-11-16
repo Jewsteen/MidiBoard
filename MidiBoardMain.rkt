@@ -46,7 +46,7 @@
 (define (RENDER ms)
   (place-image 
    (underlay/offset
-    (overlay/offset (rectangle 2000 300 "solid" "black")
+    (overlay/offset (overlay/offset (rectangle 2000 300 "solid" "black") -133 200 (overlay (circle 30 "solid" "cyan")(circle 35 "solid" "black")))
                    200
                    300               
    (overlay/xy
