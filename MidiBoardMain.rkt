@@ -161,6 +161,31 @@
 
 ;(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 0) one)
 
+(define (octav world funct)
+  (cond
+    [(and (equal? 0 (ms-octave world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [(and (equal? 8 (ms-octave world))(equal? funct 1)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [ else  (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1)
+                     (cond
+                    [(equal? funct 0) (- (ms-octave world) 1)]
+                    [else (+ (ms-octave world) 1)]
+                     )
+                     (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+))
+
+(define (vol world funct)
+  (cond
+    [(and (equal? 1 (ms-octave world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [(and (equal? 0 (ms-octave world))(equal? funct 1)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [ else  (make-ms
+             (cond
+                    [(equal? funct 0) (- (ms-volume world) 0.1)]
+                    [else (+ (ms-volume world) 0.1)]
+                     )
+             (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+))
+
+
 ;keytracker is a function that maps midi notes to keys based on the octave and produces a make-tone
 ;worldstate key -> rsound
 (define (keytracker world key)
@@ -176,6 +201,11 @@
         [(key=? "h" key)  (oppBool world 9)]
         [(key=? "u" key)  (oppBool world 10)]
         [(key=? "j" key)  (oppBool world 11)]
+        [(key=? "[" key) (octav world 0) ]
+        [(key=? "]" key) (octav world 1) ]
+        [(key=? "-" key) (vol world 0) ]
+        [(key=? "=" key) (vol world 1) ]
+        [(key=? "escape" key) (exit) ]
         [else (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
 )
   )
@@ -200,17 +230,16 @@
     [(list-ref (ms-pressed? world) index)(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world index) 12000) ]
     [else (silence 1)]
  ))
-(define (
 
 (define (tock y)
-  (andplay (rs-scale  (ms-volume y) (rs-overlay* (list (scon y 0)(scon y 1)(scon y 2)(scon y 3)(scon y 4)(scon y 5)(scon y 6)(scon y 7)(scon y 8)(scon y 10)(scon y 11) )))
+  (andplay (rs-scale  (ms-volume y) (rs-overlay* (list (scon y 0)(scon y 1)(scon y 2)(scon y 3)(scon y 4)(scon y 5)(scon y 6)(scon y 7)(scon y 8)(scon y 9)(scon y 10)(scon y 11) )))
         (make-ms (ms-volume y) (ms-pressed? y) (ms-Plength y) (ms-octave y) (ms-kit y) (ms-record? y) (ms-recordlength y) (ms-rate y) (ms-tempo y)))
 )
 
 
 (define (Midi y)
     (big-bang y
-              [on-tick tock 0.25]     
+              [on-tick tock 0.1]     
               [to-draw RENDER]
               [on-key keytracker]
               [on-release keytracker]
