@@ -1,7 +1,7 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-intermediate-reader.ss" "lang")((modname MidiBoardMain) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
-(require rsound)
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname MidiBoardMainJustin) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require rsound)  
 (require 2htdp/universe)
 (require 2htdp/image)
 (require racket/list)
@@ -24,7 +24,6 @@
 ; WorldState(ms) number number -> string
 (define (colorKey ws index col)
   (cond
-   
     [(equal? 1 col ) 
     (cond
       [(equal? (list-ref (ms-pressed? ws) index) #t) "red"]
@@ -37,8 +36,19 @@
     ]
     [else "green"] 
     ))
-
-
+(define (colorSect ws type rect)
+(cond
+  [(equal? type 0)
+   (beside
+    (rectangle (* 100 (ms-volume ws)) 50 "solid" "green")
+    (rectangle (- 100 (* 100 (ms-volume ws))) 50 "solid" "red"))
+  ]
+  [(equal? type 1)
+     (beside
+    (rectangle (* 12.5 (ms-octave ws)) 50 "solid" "green")
+    (rectangle (- 100 (* 12.5 (ms-octave ws))) 50 "solid" "red"))
+  ]
+  ))
 
 ;defining function RENDER which takes a ms
 ;ms -> ms
@@ -46,56 +56,75 @@
 (define (RENDER ms)
   (place-image 
    (underlay/offset
-    (overlay/offset (overlay/offset (rectangle 2000 300 "solid" "black") -133 200 (overlay (circle 30 "solid" "cyan")(circle 35 "solid" "black")))
+    (overlay/offset (rectangle 2000 300 "solid" "black")
                    200
                    300               
    (overlay/xy
             (beside
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 0 1)) 20 140 (text "C" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 2 1)) 20 140 (text "D" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 4 1)) 20 140 (text "E" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 5 1)) 20 140 (text "F" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 7 1)) 20 140 (text "G" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 9 1)) 20 140 (text "A" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 11 1))20 140 (text "B" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" "BlAcK")20 140 (text "C" 40 "black")))     
+              (rectangle 67.5 210.825 "outline" (colorKey ms 0 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 2 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 4 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 5 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 7 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 9 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 11 1))
+               (rectangle 67.5 210.825 "outline" (colorKey ms 12 1)))     
+     
             0
             0
      ;For this set of rectangles, all rectangles with col == 0 will turn red for the corresponding white key
              (beside
                      (rectangle 35 140.5485 "solid" (colorKey ms 0 0))
-                     (underlay/xy (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1)) 0 60 (text "C#" 20 "white"))
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 2 0))
-                     (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))0 60 (text "D#" 20 "white"))
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))
                      (rectangle 37.5 140.5485  "solid" (colorKey ms 4 0))
                      (rectangle 37.5 140.5485  "solid" (colorKey ms 5 0))
-                     (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))0 60 (text "F#" 20 "white"))
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 7 0))
-                     (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))0 60 (text "G#" 20 "white"))
+                     (rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 9 0))
-                     (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))0 60 (text "A#" 20 "white"))
+                     (rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))
                      (rectangle 35 140.5485 "solid" (colorKey ms 11 0))
+                     (rectangle 35 140.5485 "solid" (colorKey ms 12 0))
+
+
                       )
               ))
     200
     -100
     (overlay/xy
      (beside
-                 (rectangle 100 50 "solid" "purple")
-                 (rectangle 100 50 "solid" "black")
-                 (rectangle 100 50 "solid" "purple")
-                 (rectangle 100 50 "solid" "black")
-                 (rectangle 100 50 "solid" "purple")
+                (text  "Volume: "  24 "White" )
+                (colorSect ms 0 0)
+                (text (string-append " | " (number->string (* 100 (ms-volume ms))) "% ") 24 "White" )
+               
           )
+     -75
      0
-     -100
+   (overlay/xy
      (beside
-                 (rectangle 100 50 "solid" "purple")
-                 (rectangle 100 50 "solid" "black")
-                 (rectangle 100 50 "solid" "purple")
-                 (rectangle 100 50 "solid" "black")
-                 (rectangle 100 50 "solid" "purple")
+                 (text  "Octave: "  24 "White" )
+                 (colorSect ms 1 1)
+                 (text (string-append " | " (number->string  (ms-octave ms)) "") 24 "White" )
+
+             
           )
+     -350
+     100
+     (beside
+                (colorSect ms 1 0)
+                 (rectangle 50 50 "solid" "black")
+                  (colorSect ms 1 1)
+                 (rectangle 50 50 "solid" "black")
+                  (colorSect ms 1 2)
+                 (rectangle 50 50 "solid" "black")
+                  (colorSect ms 1 2)
+
+
+
+      )
+     )
      )
     )
             200
@@ -115,7 +144,7 @@
 
 ;test variables defined for you guessed it, testing
 (define testkit (make-kit "vgame" 50))
-(define test (make-ms .8 '(#f #f #f #f #f #f #f #f #f #f #f #f #f) '(-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1) 6 testkit #f 0 1 0))
+(define test (make-ms .8 (make-list 13 #f) (cons (make-list 4 (silence 1) ) '()) 6 testkit #f 0 0 133))
 (define one 44100)
 
 
@@ -152,15 +181,7 @@
 (define (oppBool ws index)
   (make-ms (ms-volume ws)
            (list-set (ms-pressed? ws) index (not(list-ref (ms-pressed? ws) index )) )
-
-           (list-set (ms-Plength ws) index
-                    (cond
-                     [(equal? -1 (list-ref (ms-Plength ws) index )) 0]
-                     [else -1]
-                     )
-                    )
-           
-           (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws))
+  (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws))
   )
 
 ;(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world 0) one)
@@ -171,9 +192,9 @@
 ;WorldState(ms) Number -> WorldState(ms)
 (define (octav world funct)
   (cond
-    [(and (equal? 0 (ms-octave world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
-    [(and (equal? 8 (ms-octave world))(equal? funct 1)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
-    [ else  (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1)
+    [(and (equal? 0 (ms-octave world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [(and (equal? 8 (ms-octave world))(equal? funct 1)) (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [ else  (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1)
                      (cond
                     [(equal? funct 0) (- (ms-octave world) 1)]
                     [else (+ (ms-octave world) 1)]
@@ -187,14 +208,14 @@
 ;WorldState(ms) Number -> WorldState(ms)
 (define (vol world funct)
   (cond
-    [(and (equal? 1 (ms-octave world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
-    [(and (equal? 0 (ms-octave world))(equal? funct 1)) (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [(and (equal? 1.0 (ms-volume world))(equal? funct 1)) (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [(and (equal? 0.0 (ms-volume world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
     [ else  (make-ms
              (cond
                     [(equal? funct 0) (- (ms-volume world) 0.1)]
                     [else (+ (ms-volume world) 0.1)]
                      )
-             (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+             (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
 ))
 
 
@@ -220,13 +241,12 @@
         [(key=? "-" key) (vol world 0) ]
         [(key=? "=" key) (vol world 1) ]
         [(key=? "escape" key) (exit) ]
-        [else (make-ms (ms-volume world) (make-list 12 #f) (make-list 12 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+        [else (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
 )
   )
 
 ;(kit-kitname (ms-kit test))
 ;(check-expect (keytracker test "f") (synth-note "vgame" 50 5 44100))
-
 
 ;world->list is a function that extracrts the pressed? list from a world
 ;world -> list-of-sounds
@@ -264,15 +284,17 @@
         [else (rs-overlay* lor)])
   )
 
-;(check-expect (soundoverlay '()) (silence 1))
-;(check-expect (soundoverlay (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100))) (rs-overlay* (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100))))
+(check-expect (soundoverlay '()) (silence 1))
+(check-expect (soundoverlay (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100))) (rs-overlay* (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100)))
+
+
 
 
 ;Scon takes in a world and a number
 ; then returns a synth note or silence based on whether or not a piano key is being pressed
 ; WorldState(ms) Number -> WorldState(ms)
-(define (scon world index)
- #| (cond
+#|(define (scon world index)
+  (cond]
     [(empty? pressed) '()]
     [else
     (cond
@@ -282,28 +304,29 @@
        [else (cons (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world start) 48000) (sound_list (rest pressed) world (+ start 1)))]
      )
     ]
-    ) |#
+    ) 
   (cond
     [(list-ref (ms-pressed? world) index)(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world index) 12000) ]
     [else (silence 1)]
  ))
+|#
 
 ;Tock takes in a WorldState and plays a sound and or silence
 ;Based on the WorldState
 ;WorldState -> WorldState
 (define (tock y)
-  (andplay (rs-scale  (ms-volume y) (rs-overlay* (list (scon y 0)(scon y 1)(scon y 2)(scon y 3)(scon y 4)(scon y 5)(scon y 6)(scon y 7)(scon y 8)(scon y 9)(scon y 10)(scon y 11) )))
-        (make-ms (ms-volume y) (ms-pressed? y) (ms-Plength y) (ms-octave y) (ms-kit y) (ms-record? y) (ms-recordlength y) (ms-rate y) (ms-tempo y)))
+y
 )
+#|  (andplay (rs-scale  (ms-volume y) (rs-overlay* (list (scon y 0)(scon y 1)(scon y 2)(scon y 3)(scon y 4)(scon y 5)(scon y 6)(scon y 7)(scon y 8)(scon y 9)(scon y 10)(scon y 11) )))
+        (make-ms (ms-volume y) (ms-pressed? y) (ms-Plength y) (ms-octave y) (ms-kit y) (ms-record? y) (ms-recordlength y) (ms-rate y) (ms-tempo y)))
 
+|#
 
-(define (Midi y)
-    (big-bang y
-              [on-tick tock 0.1]     
-              [to-draw RENDER]
-              [on-key keytracker]
-              [on-release keytracker]
-              )
-    )
-
-(Midi test)
+;(define (Midi y)
+ ;   (big-bang y
+;              [on-tick tock 1]     
+;              [to-draw RENDER]
+;              [on-key keytracker]
+ ;             )
+  ;  )
+;(Midi test)

@@ -1,7 +1,7 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
 #reader(lib "htdp-intermediate-reader.ss" "lang")((modname MidiBoardMain) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
-(require rsound)
+x(require rsound)
 (require 2htdp/universe)
 (require 2htdp/image)
 (require racket/list)
@@ -46,34 +46,33 @@
 (define (RENDER ms)
   (place-image 
    (underlay/offset
-    (overlay/offset (overlay/offset (rectangle 2000 300 "solid" "black") -133 200 (overlay (circle 30 "solid" "cyan")(circle 35 "solid" "black")))
+    (overlay/offset (rectangle 2000 300 "solid" "black")
                    200
                    300               
    (overlay/xy
             (beside
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 0 1)) 20 140 (text "C" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 2 1)) 20 140 (text "D" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 4 1)) 20 140 (text "E" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 5 1)) 20 140 (text "F" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 7 1)) 20 140 (text "G" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 9 1)) 20 140 (text "A" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms 11 1))20 140 (text "B" 40 "black"))
-              (overlay/xy (rectangle 67.5 210.825 "outline" "BlAcK")20 140 (text "C" 40 "black")))     
+              (rectangle 67.5 210.825 "outline" (colorKey ms 0 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 2 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 4 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 5 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 7 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 9 1))
+              (rectangle 67.5 210.825 "outline" (colorKey ms 11 1)))     
             0
             0
      ;For this set of rectangles, all rectangles with col == 0 will turn red for the corresponding white key
              (beside
                      (rectangle 35 140.5485 "solid" (colorKey ms 0 0))
-                     (underlay/xy (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1)) 0 60 (text "C#" 20 "white"))
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 2 0))
-                     (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))0 60 (text "D#" 20 "white"))
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))
                      (rectangle 37.5 140.5485  "solid" (colorKey ms 4 0))
                      (rectangle 37.5 140.5485  "solid" (colorKey ms 5 0))
-                     (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))0 60 (text "F#" 20 "white"))
+                     (rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 7 0))
-                     (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))0 60 (text "G#" 20 "white"))
+                     (rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 9 0))
-                     (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))0 60 (text "A#" 20 "white"))
+                     (rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))
                      (rectangle 35 140.5485 "solid" (colorKey ms 11 0))
                       )
               ))
@@ -180,6 +179,10 @@
                      )
                      (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
 ))
+;;need a function that can edit a vlue of ms with an index
+;ms-index is a function that 
+
+
 
 ;Vol takes in a worldstate and a number
 ;then changes or doesn't change the volume based on the current world
@@ -226,46 +229,6 @@
 
 ;(kit-kitname (ms-kit test))
 ;(check-expect (keytracker test "f") (synth-note "vgame" 50 5 44100))
-
-
-;world->list is a function that extracrts the pressed? list from a world
-;world -> list-of-sounds
-(define (world->list world)
-    (ms-pressed? world)
-)
-;(check-expect (world->list test) (make-list 13 #f))
-
-
-;synthcreation is a function that takes in a world state and a list and makes a synthnote
-;worldstate boolean number -> synthnote
-(define (synthcreation world i)
-  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (+ (* 12 (+ 1 (ms-octave world))) i) 44100)
-  
-  )
-;(check-expect (synthcreation test 2) (synth-note "vgame" 50 86 44100))
-
-
-;soundconverter is a function that converts the pressed booleans into a list-of-rsounds based on the worldstate
-;worldstate list-of-soounds number-> list-of-rsounds
-(define (soundconverter world listy index)
- (cond [(empty? listy) '()]
-       [else (cond
-               [(first listy) (cons (synthcreation world index) (soundconverter world (rest listy) (+ 1 index)))]
-               [else (soundconverter world (rest listy) (+ 1 index))])])
- )
-;(check-expect (soundconverter test (make-list 13 #f) 0) '())
-;(check-expect (soundconverter test (list #f #f #t #t #t #f #f #f #f #f #f #f #f) 0) (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100)))
-
-
-;soundoverlay is a function that takes in a list of r-sounds and overlays them
-;list-of-rsounds -> rsound
-(define (soundoverlay lor)
-  (cond [(empty? lor) (silence 1)]
-        [else (rs-overlay* lor)])
-  )
-
-;(check-expect (soundoverlay '()) (silence 1))
-;(check-expect (soundoverlay (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100))) (rs-overlay* (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100))))
 
 
 ;Scon takes in a world and a number
