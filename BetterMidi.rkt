@@ -91,14 +91,13 @@
     (rectangle (- 100 (* 12.5 (ms-octave ws))) 50 "solid" "red"))
   ]
   [(equal? type 2)
-   
        (cond
          [(and (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect))) (equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect)))
               (rectangle 100 50 "solid" "blue")
           ]
          [(and (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect))) (not(equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect))))
               (rectangle 100 50 "solid" "purple")
-          ]
+          ] 
          [(and (equal? false (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect)))) (equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect)))
               (rectangle 100 50 "solid" "orange")]
          
@@ -108,6 +107,10 @@
      ]
   
   ))
+
+(define (oc str num ms)
+   (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms num 1)) 20 140 (text str 40 "black")))
+
 
 ;defining function RENDER which takes a ms
 ;ms -> ms
@@ -120,32 +123,32 @@
                    300               
    (overlay/xy
             (beside
-              (rectangle 67.5 210.825 "outline" (colorKey ms 0 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 2 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 4 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 5 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 7 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 9 1))
-              (rectangle 67.5 210.825 "outline" (colorKey ms 11 1))
-               (rectangle 67.5 210.825 "outline" (colorKey ms 12 1)))     
+              (oc "C" 0 ms)
+              (oc "D" 2 ms)
+              (oc "E" 4 ms)
+              (oc "F" 5 ms)
+              (oc "G" 7 ms)
+              (oc "A" 9 ms)
+              (oc "B" 11 ms)
+              (oc "C" 12 ms))
+            
      
             0
             0
      ;For this set of rectangles, all rectangles with col == 0 will turn red for the corresponding white key
              (beside
-                     (rectangle 35 140.5485 "solid" (colorKey ms 0 0))
-                     (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1))
+              (rectangle 35 140.5485 "solid" (colorKey ms 0 0))
+                     (underlay/xy (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1)) 0 60 (text "C#" 20 "white"))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 2 0))
-                     (rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))
+                     (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))0 60 (text "D#" 20 "white"))
                      (rectangle 37.5 140.5485  "solid" (colorKey ms 4 0))
                      (rectangle 37.5 140.5485  "solid" (colorKey ms 5 0))
-                     (rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))
+                     (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))0 60 (text "F#" 20 "white"))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 7 0))
-                     (rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))
+                     (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))0 60 (text "G#" 20 "white"))
                      (rectangle 34.5 140.5485  "solid" (colorKey ms 9 0))
-                     (rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))
+                     (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))0 60 (text "A#" 20 "white"))
                      (rectangle 35 140.5485 "solid" (colorKey ms 11 0))
-                     (rectangle 35 140.5485 "solid" (colorKey ms 12 0))
 
 
                       )
@@ -172,6 +175,8 @@
      -350
      100
      (beside
+                       (rectangle 50 50 "solid" "black")
+
                 (colorSect ms 2 0)
                  (rectangle 50 50 "solid" "black")
                   (colorSect ms 2 1)
@@ -362,32 +367,6 @@
 )
   )
 
-;(kit-kitname (ms-kit test))
-;(check-expect (keytracker test "f") (synth-note "vgame" 50 5 44100))
-
-
-;Scon takes in a world and a number
-; then returns a synth note or silence based on whether or not a piano key is being pressed
-; WorldState(ms) Number -> WorldState(ms)
-#|(define (scon world index)
-  (cond]
-    [(empty? pressed) '()]
-    [else
-    (cond
-       [(= (length (ms-pressed? world)) (+ start 1)) '()]
-      [(equal? #f (first (ms-pressed? world))) (cons (silence 1) (sound_list (rest pressed) world (+ start 1)))]
-      ; [(equal? -1 (first (ms-Plength world))) (cons (silence 1) (sound_list (rest pressed) world (+ start 1)))]
-       [else (cons (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world start) 48000) (sound_list (rest pressed) world (+ start 1)))]
-     )
-    ]
-    ) 
-  (cond
-    [(list-ref (ms-pressed? world) index)(synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (selector world index) 12000) ]
-    [else (silence 1)]
- ))
-|#
-
-
 
 ;Tock takes in a WorldState and plays a sound and or silence
 ;Based on the WorldState
@@ -405,6 +384,7 @@ y
               [on-tick tock 1]     
               [to-draw RENDER]
               [on-key keytracker]
+      
               )
     )
 (Midi test)
