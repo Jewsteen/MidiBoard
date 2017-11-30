@@ -247,7 +247,7 @@
 
 ;soundconverter is a function that converts the pressed booleans into a list-of-rsounds based on the worldstate
 ;worldstate list-of-soounds number-> list-of-rsounds
-(define (soundconverter world  listy index)
+(define (soundconverter world listy index)
  (cond [(empty? listy) '()]
        [else (cond
                [(first listy) (cons (synthcreation world index) (soundconverter world (rest listy) (+ 1 index)))]
@@ -256,14 +256,6 @@
 ;(check-expect (soundconverter test (make-list 13 #f) 0) '())
 ;(check-expect (soundconverter test (list #f #f #t #t #t #f #f #f #f #f #f #f #f) 0) (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100)))
 
-
-(define (list_conv ws pList)
-  (cond
-    [(empty? pList) '()]
-    [else
-     (cons (soundconverter ws (first pList) 0) (list_conv ws (rest pList)))
-     ]
-    ))
 
 ;soundoverlay is a function that takes in a list of r-sounds and overlays them
 ;list-of-rsounds -> rsound

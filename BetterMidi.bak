@@ -18,66 +18,24 @@
 ;tempo - how fast the metronome moves in bpm (needs to convert from frames per second)
 (define-struct ms (volume pressed? Plength octave kit record? recordlength rate tempo))
 
-;kit is a structure from the worldstate that includes
-;kitname - a string that determines the family "vgame"
-;kitnumber - a whole number that deterimess the number
-(define-struct kit (kitname kitnum))
-
-;test variables defined for you guessed it, testing
-(define testkit (make-kit "vgame" 50))
-(define test (make-ms .8 (make-list 52 #f) (cons (make-list 4 (silence 1) ) '()) 6 testkit #f (silence 1) 0 133))
-
 ;========================================================================
-;IndR outputs a boolean inthe current note ased on the index given.
-; WorldState Number - > boolean
-(define (IndR ws index)
-  (list-ref (ms-pressed? ws)  (+ index (* 13 (ms-rate ws)))))
-
-
-;One-True takes in a list of booleans and returns true
-; if there's atleast one true value in the list
-; List_of_booleans -> boolean
-(define (one-true booList)
-  (cond
-    [(empty? booList) #f]
-    [(cons? booList)
-      (or (boolean=? (first booList) #t)
-       (one-true (rest booList)))]
-     ))
-(check-expect (one-true (list #f #t #f #f)) #t)
-
-;N-List takes an index and converts a 13 boolean section of a list into it's own list.
-;List_of_booleans Number -> List_of_booleans
-(define (N-List lob index)
- (take (drop lob (* index 13)) 13))
-
-(check-expect (N-List (make-list 52 #f) 1) (make-list 13 #f))
-
 ;colorKey outputs a rectangle color based on what it's original color was
 ;and whether it's currently pressed or not
 ; WorldState(ms) number number -> string
-
 (define (colorKey ws index col)
   (cond
     [(equal? 1 col ) 
     (cond
-      [(equal?  (IndR ws index) #t) "red"]
+      [(equal? (list-ref (ms-pressed? ws) index) #t) "red"]
       [else "black"])
     ]
     [(equal? 0 col)
      (cond
-      [(equal? (IndR ws index) #t) "red"]
+      [(equal? (list-ref (ms-pressed? ws) index) #t) "red"]
       [else "white"])
     ]
     [else "green"] 
     ))
-
-
-(define (NoteIndex cNote pos )
-  (+ (* 4 (floor (/ cNote 4))) pos))
-
-
-
 (define (colorSect ws type rect)
 (cond
   [(equal? type 0)
@@ -90,23 +48,6 @@
     (rectangle (* 12.5 (ms-octave ws)) 50 "solid" "green")
     (rectangle (- 100 (* 12.5 (ms-octave ws))) 50 "solid" "red"))
   ]
-  [(equal? type 2)
-   
-       (cond
-         [(and (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect))) (equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect)))
-              (rectangle 100 50 "solid" "blue")
-          ]
-         [(and (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect))) (not(equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect))))
-              (rectangle 100 50 "solid" "purple")
-          ]
-         [(and (equal? false (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect)))) (equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect)))
-              (rectangle 100 50 "solid" "orange")]
-         
-         [else (rectangle 100 50 "solid" "yellow")]
-         )
-     
-     ]
-  
   ))
 
 ;defining function RENDER which takes a ms
@@ -165,20 +106,22 @@
      (beside
                  (text  "Octave: "  24 "White" )
                  (colorSect ms 1 1)
-                 (text (string-append " | " (number->string  (ms-octave ms)) " NoteNum " (number->string (length (ms-pressed? ms)) )) 24 "White" )
+                 (text (string-append " | " (number->string  (ms-octave ms)) "") 24 "White" )
 
              
           )
      -350
      100
      (beside
-                (colorSect ms 2 0)
+                (colorSect ms 1 0)
                  (rectangle 50 50 "solid" "black")
-                  (colorSect ms 2 1)
+                  (colorSect ms 1 1)
                  (rectangle 50 50 "solid" "black")
-                  (colorSect ms 2 2)
+                  (colorSect ms 1 2)
                  (rectangle 50 50 "solid" "black")
-                  (colorSect ms 2 3)
+                  (colorSect ms 1 2)
+
+
 
       )
      )
@@ -194,6 +137,14 @@
 ;=======================================================
 
 
+;kit is a structure from the worldstate that includes
+;kitname - a string that determines the family "vgame"
+;kitnumber - a whole number that deterimess the number
+(define-struct kit (kitname kitnum))
+
+;test variables defined for you guessed it, testing
+(define testkit (make-kit "vgame" 50))
+(define test (make-ms .8 (make-list 13 #f) (cons (make-list 4 (silence 1) ) '()) 6 testkit #f 0 0 133))
 (define one 44100)
 
 
@@ -229,7 +180,7 @@
 ; WorldState(ms) number -> WorldState(ms)
 (define (oppBool ws index)
   (make-ms (ms-volume ws)
-            (list-set (ms-pressed? ws) (+ index (* 13 (ms-rate ws))) (not (IndR ws index)) )
+           (list-set (ms-pressed? ws) index (not(list-ref (ms-pressed? ws) index )) )
   (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws))
   )
 
@@ -241,9 +192,9 @@
 ;WorldState(ms) Number -> WorldState(ms)
 (define (octav world funct)
   (cond
-    [(and (equal? 0 (ms-octave world))(equal? funct 0)) world]
-    [(and (equal? 8 (ms-octave world))(equal? funct 1)) world]
-    [ else  (make-ms (ms-volume world)(ms-pressed? world) (ms-Plength world)
+    [(and (equal? 0 (ms-octave world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [(and (equal? 8 (ms-octave world))(equal? funct 1)) (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [ else  (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1)
                      (cond
                     [(equal? funct 0) (- (ms-octave world) 1)]
                     [else (+ (ms-octave world) 1)]
@@ -257,78 +208,15 @@
 ;WorldState(ms) Number -> WorldState(ms)
 (define (vol world funct)
   (cond
-    [(and (equal? 1.0 (ms-volume world))(equal? funct 1)) world]
-    [(and (equal? 0.0 (ms-volume world))(equal? funct 0)) world]
+    [(and (equal? 1.0 (ms-volume world))(equal? funct 1)) (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+    [(and (equal? 0.0 (ms-volume world))(equal? funct 0)) (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
     [ else  (make-ms
              (cond
                     [(equal? funct 0) (- (ms-volume world) 0.1)]
                     [else (+ (ms-volume world) 0.1)]
                      )
-             (ms-pressed? world) (ms-Plength world) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+             (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
 ))
-
-;Mchg outputs a worldstate with the correct current note and a new note to the song if necessary
-;WorldState(ms) boolean -> WorldState(ms)
-(define (Mchg ws next?)
-  (cond
-    [next?
-     (cond
-       [(equal? (/ (length (ms-pressed? ws)) 13) (+ 1 (ms-rate ws)))
-        (make-ms (ms-volume ws) (append (ms-pressed? ws) (make-list 52 #f)) (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (+ (ms-rate ws) 1) (ms-tempo ws))]
-       [else  (make-ms (ms-volume ws) (ms-pressed? ws) (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (+ (ms-rate ws) 1) (ms-tempo ws))]
-       )
-    ]
-    [else
-     (cond
-       [(equal? (ms-rate ws) 0) ws]
-       [else (make-ms (ms-volume ws) (ms-pressed? ws) (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (- (ms-rate ws) 1) (ms-tempo ws))]
-      )]))
-
-;world->list is a function that extracrts the pressed? list from a world
-;world -> list-of-sounds
-(define (world->list world)
-    (ms-pressed? world)
-)
-;(check-expect (world->list test) (make-list 13 #f))
-
-
-;synthcreation is a function that takes in a world state and a list and makes a synthnote
-;worldstate boolean number -> synthnote
-(define (synthcreation world i)
-  (synth-note (kit-kitname (ms-kit world)) (kit-kitnum (ms-kit world)) (+ (* 12 (+ 1 (ms-octave world))) i) (round (* 48000 (/ 60 (ms-tempo world)))))
-  
-  )
-;(check-expect (synthcreation test 2) (synth-note "vgame" 50 86 44100))
-
-
-;soundconverter is a function that converts the pressed booleans into a list-of-rsounds based on the worldstate
-;worldstate list-of-soounds number-> list-of-rsounds
-(define (soundconverter world  listy index)
- (cond [(empty? listy) '()]
-       [else (cond
-               [(first listy) (cons (synthcreation world index) (soundconverter world (rest listy) (+ 1 index)))]
-               [else (soundconverter world (rest listy) (+ 1 index))])])
- )
-;(check-expect (soundconverter test (make-list 13 #f) 0) '())
-;(check-expect (soundconverter test (list #f #f #t #t #t #f #f #f #f #f #f #f #f) 0) (list (synth-note "vgame" 50 86 44100) (synth-note "vgame" 50 87 44100) (synth-note "vgame" 50 88 44100)))
-
-(define (LtRS ws lob index)
-  (cond
-    [(empty? lob) '()]
-    [(> 13 (length lob)) '()]
-    [else
-     (cond
-       [(empty? (soundconverter ws (take lob 13) 0)) (LtRS ws lob (+ index 1))]
-       [else (cons (rs-overlay* (soundconverter ws (take lob 13) 0))
-                   (LtRS ws (drop lob 13) (+ index 1))) ])
-     ]
-    ))
-
-
-(define (SaveList ws)
- (make-ms (ms-volume ws) (ms-pressed? ws) (ms-Plength ws) (ms-octave ws) (ms-kit ws) (rs-append* (LtRS ws (ms-pressed? ws) 0) )  (ms-recordlength ws) (ms-rate ws) (ms-tempo ws)) )
- 
-;(check-expect (soundconverter test (list #f #f #t #t #t #f #f #f #f #f #f #f #f) 0) (list (synth-note "vgame" 50 86 (round (* 48000(/ 60 (ms-tempo test))))) (synth-note "vgame" 50 87 (round (* 48000(/ 60 (ms-tempo test))))) (synth-note "vgame" 50 88 (round (* 48000(/ 60 (ms-tempo test)))))))
 
 
 ;keytracker is a function that maps midi notes to keys based on the octave and produces a make-tone
@@ -353,12 +241,7 @@
         [(key=? "-" key) (vol world 0) ]
         [(key=? "=" key) (vol world 1) ]
         [(key=? "escape" key) (exit) ]
-        [(key=? "left" key) (Mchg world #f) ]
-        [(key=? "right" key) (Mchg world #t) ]
-        [(key=? "1" key) (SaveList world)]
-        [(key=? "2" key) (andplay (ms-record? world) world)]
-         
-        [else world]
+        [else (make-ms (ms-volume world) (make-list 13 #f) (make-list 13 -1) (ms-octave world) (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
 )
   )
 
@@ -386,8 +269,6 @@
     [else (silence 1)]
  ))
 |#
-
-
 
 ;Tock takes in a WorldState and plays a sound and or silence
 ;Based on the WorldState
