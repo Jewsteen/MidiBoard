@@ -32,6 +32,7 @@
 (define testkit (make-kit "vgame" 50))
 (define test (make-ms .8 (make-list 52 #f) (make-pstate #f 0) 6 testkit (silence 1) (silence 1) 0 133))
 (define tick (* 0.25 48000))
+(define UIS 2)
 
 ;========================================================================
 ;IndR outputs a boolean inthe current note ased on the index given.
@@ -74,7 +75,7 @@
      ]
     [else "green"] 
     ))
-
+(*  2)
 ;NoteIndex outputs the index of the onscreen note based on
 ;what current note is selected.
 ;Number Number -> Number
@@ -88,34 +89,34 @@
   (cond
     [(equal? type 0)
      (beside
-      (rectangle (* 100 (ms-volume ws)) 50 "solid" "green")
-      (rectangle (- 100 (* 100 (ms-volume ws))) 50 "solid" "red"))
+      (rectangle (* (* 100 UIS) (ms-volume ws)) (* 50 UIS) "solid" "green")
+      (rectangle (- (* 100 UIS) (* (* 100 UIS) (ms-volume ws))) (* 50 UIS) "solid" "red"))
      ]
     [(equal? type 1)
      (beside
-      (rectangle (* 12.5 (ms-octave ws)) 50 "solid" "green")
-      (rectangle (- 100 (* 12.5 (ms-octave ws))) 50 "solid" "red"))
+      (rectangle (* (* 12.5 UIS) (ms-octave ws)) (* 50 UIS) "solid" "green")
+      (rectangle (- (* 100 UIS) (* (* 12.5 UIS) (ms-octave ws))) (* 50 UIS) "solid" "red"))
      ]
     [(equal? type 2)
      (cond
        [(and (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect))) (equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect)))
-        (rectangle 100 50 "solid" "blue")
+        (rectangle (* 100 UIS) (* 50 UIS) "solid" "blue")
         ]
        [(and (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect))) (not(equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect))))
-        (rectangle 100 50 "solid" "purple")
+        (rectangle (* 100 UIS) (* 50 UIS) "solid" "purple")
         ] 
        [(and (equal? false (one-true (N-List (ms-pressed? ws) (NoteIndex (ms-rate ws) rect)))) (equal? (ms-rate ws) (NoteIndex (ms-rate ws) rect)))
-        (rectangle 100 50 "solid" "orange")]
+        (rectangle (* 100 UIS) (* 50 UIS) "solid" "orange")]
          
-       [else (rectangle 100 50 "solid" "yellow")]
+       [else (rectangle (* 100 UIS) (* 50 UIS) "solid" "yellow")]
        )
      
      ]
     [(equal? type 3)
    
      (beside
-      (rectangle (round (* 700 (/ (pstate-frames (ms-Plength ws)) (rs-frames (ms-record? ws))))) 50 "solid" "Blue")
-      (rectangle (- 700 (round (* 700 (/ (pstate-frames (ms-Plength ws)) (rs-frames (ms-record? ws)))))) 50 "solid" "LightCyan"))
+      (rectangle (round (* (* 700 UIS) (/ (pstate-frames (ms-Plength ws)) (rs-frames (ms-record? ws))))) (* 50 UIS) "solid" "Blue")
+      (rectangle (- (* 700 UIS) (round (* (* 700 UIS) (/ (pstate-frames (ms-Plength ws)) (rs-frames (ms-record? ws)))))) (* 50 UIS) "solid" "LightCyan"))
      ]
     ))
 
@@ -123,7 +124,7 @@
 ;oc outputs an key(image) based on a name and position
 ;String Number WorldState -> Image
 (define (oc str num ms)
-  (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms num 1)) 20 140 (text str 40 "black")))
+  (overlay/xy (rectangle (* 67.5 UIS) (* UIS 210.825) "outline" (colorKey ms num 1)) (* 20 UIS) (* 140 UIS) (text str (* UIS 40) "black")))
 
 ;defining function RENDER which takes a ms
 ;ms -> ms
@@ -131,9 +132,9 @@
 (define (RENDER ms)
   (place-image 
    (underlay/offset
-    (overlay/offset (rectangle 2000 300 "solid" "black")
-                    200
-                    300               
+    (overlay/offset (rectangle (* 2000 UIS) (* UIS 300) "solid" "black")
+                    (* 200 UIS)
+                    (* 300 UIS)               
                     (overlay/xy
                      (beside
                       (oc "C" 0 ms)
@@ -145,54 +146,54 @@
                       (oc "B" 11 ms)
                       (oc "C" 12 ms))
                      0
-                     0
+                     0 
                      (beside
-                      (rectangle 35 140.5485 "solid" (colorKey ms 0 0))
-                      (underlay/xy (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1)) 0 60 (text "C#" 20 "white"))
-                      (rectangle 34.5 140.5485  "solid" (colorKey ms 2 0))
-                      (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 3 1))0 60 (text "D#" 20 "white"))
-                      (rectangle 37.5 140.5485  "solid" (colorKey ms 4 0))
-                      (rectangle 37.5 140.5485  "solid" (colorKey ms 5 0))
-                      (underlay/xy(rectangle 43.5 140.5485 "solid" (colorKey ms 6 1))0 60 (text "F#" 20 "white"))
-                      (rectangle 34.5 140.5485  "solid" (colorKey ms 7 0))
-                      (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 8 1))0 60 (text "G#" 20 "white"))
-                      (rectangle 34.5 140.5485  "solid" (colorKey ms 9 0))
-                      (underlay/xy(rectangle 43.5 140.5485  "solid" (colorKey ms 10 1))0 60 (text "A#" 20 "white"))
-                      (rectangle 35 140.5485 "solid" (colorKey ms 11 0))
+                      (rectangle (* UIS 35) (* UIS 140.5485) "solid" (colorKey ms 0 0))
+                      (underlay/xy (rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 1 1)) 0 (* 60 UIS)(text "C#" (* UIS 20) "white"))
+                      (rectangle (* UIS 34.5) (* UIS 140.5485)  "solid" (colorKey ms 2 0))
+                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 3 1))0 (* 60 UIS)(text "D#" (* UIS 20) "white"))
+                      (rectangle (* UIS 37.5) (* UIS 140.5485)  "solid" (colorKey ms 4 0))
+                      (rectangle (* UIS 37.5) (* UIS 140.5485)  "solid" (colorKey ms 5 0))
+                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 6 1))0 (* 60 UIS)(text "F#" (* UIS 20) "white"))
+                      (rectangle (* UIS 34.5) (* UIS 140.5485)  "solid" (colorKey ms 7 0))
+                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485 ) "solid" (colorKey ms 8 1))0 (* 60 UIS)(text "G#" (* UIS 20) "white"))
+                      (rectangle (* UIS 34.5) (* UIS 140.5485)  "solid" (colorKey ms 9 0))
+                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485)  "solid" (colorKey ms 10 1))0 (* 60 UIS)(text "A#" (* UIS 20 )"white"))
+                      (rectangle (* UIS 35) (* UIS 140.5485) "solid" (colorKey ms 11 0))
                       )))
-    175
-    -100
+   (* 175 UIS)
+    (* -100 UIS)
     (overlay/xy
      (colorSect ms 3 1)
      0
-     75
+     (* 75 UIS)
      (overlay/xy
       (beside
        (text  "Volume: "  24 "White" )
        (colorSect ms 0 0)
-       (text (string-append " | " (number->string (* 100 (ms-volume ms))) "% ") 24 "White" )
+       (text (string-append " | " (number->string (*  100  (ms-volume ms))) "%   ") 24 "White" )
        (text  "Octave: "  24 "White" )
        (colorSect ms 1 1)
        (text (string-append " | " (number->string  (ms-octave ms)) "    Tempo: " (number->string (ms-tempo ms))) 24 "White" )   
        )
       0
-      65
+     (* 65 UIS)
       (beside
        (text  (string-append "M:" (number->string (+(floor(/(ms-rate ms)4))1) )" N:" (number->string (+(modulo (ms-rate ms)4)1))) 24 "White" )
-       (rectangle 25 50 "solid" "black")
+       (rectangle (* 25 UIS)(* 50 UIS) "solid" "black")
        (colorSect ms 2 0)
-       (rectangle 25 50 "solid" "black")
+       (rectangle (* 25 UIS)(* 50 UIS) "solid" "black")
        (colorSect ms 2 1)
-       (rectangle 25 50 "solid" "black")
+       (rectangle (* 25 UIS)(* 50 UIS) "solid" "black")
        (colorSect ms 2 2)
-       (rectangle 25 50 "solid" "black")
+       (rectangle (* 25 UIS)(* 50 UIS) "solid" "black")
        (colorSect ms 2 3)
-       (rectangle 25 50 "solid" "black")
+       (rectangle (* 25 UIS)(* 50 UIS) "solid" "black")
         (text  (string-append "Kit: "  (kit-kitname (ms-kit ms)) " | #: " (number->string (kit-kitnum (ms-kit ms)))) 16 "White" ))
       )))
-   200
-   200
-   (empty-scene 750 500)))
+   (* 200 UIS)
+   (* 200 UIS)
+   (empty-scene (* UIS 750) (* UIS 500))))
 ;=======================================================
 ;octavator is a function that converts a number of an octave into the various midi numbers
 ;number -> list-of-midi
