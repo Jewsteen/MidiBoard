@@ -357,8 +357,6 @@
        [(key=? "j" key) (oppBool world 11)]
        [(key=? "[" key) (octav world 0) ]
        [(key=? "]" key) (octav world 1) ]
-       [(key=? "[" key) (octav world 0) ]
-       [(key=? "]" key) (octav world 1) ]
        [(key=? "-" key) (vol world 0) ]
        [(key=? "=" key) (vol world 1) ]
        [(key=? "," key) (temp world 0) ]
@@ -384,6 +382,7 @@
     [else
      (cond
        [(key=? "3" key) (make-ms (ms-volume world) (ms-pressed? world) (make-pstate #f (pstate-frames (ms-Plength world))) (ms-octave world) (ms-kit world) (ms-record? world)  (ms-recordlength world) (ms-rate world) (ms-tempo world))]
+       [else world]
        )]))
 
 ;Tock takes in a WorldState and plays a sound and or silence
