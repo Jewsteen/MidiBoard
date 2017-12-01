@@ -125,7 +125,6 @@
 (define (oc str num ms)
   (overlay/xy (rectangle 67.5 210.825 "outline" (colorKey ms num 1)) 20 140 (text str 40 "black")))
 
-
 ;defining function RENDER which takes a ms
 ;ms -> ms
 ;function toggles keys based on the keytracker function to appear red when a button is pressed
@@ -147,7 +146,6 @@
                       (oc "C" 12 ms))
                      0
                      0
-                     ;For this set of rectangles, all rectangles with col == 0 will turn red for the corresponding white key
                      (beside
                       (rectangle 35 140.5485 "solid" (colorKey ms 0 0))
                       (underlay/xy (rectangle 43.5 140.5485 "solid" (colorKey ms 1 1)) 0 60 (text "C#" 20 "white"))
@@ -190,18 +188,12 @@
        (rectangle 25 50 "solid" "black")
        (colorSect ms 2 3)
        (rectangle 25 50 "solid" "black")
-        (text  (string-append "Kit: "  (kit-kitname (ms-kit ms)) " | #: " (number->string (kit-kitnum (ms-kit ms)))) 16 "White" )
-)
+        (text  (string-append "Kit: "  (kit-kitname (ms-kit ms)) " | #: " (number->string (kit-kitnum (ms-kit ms)))) 16 "White" ))
       )))
    200
    200
-   (empty-scene 750 500)
-   )
-  )
-  
-
+   (empty-scene 750 500)))
 ;=======================================================
-
 ;octavator is a function that converts a number of an octave into the various midi numbers
 ;number -> list-of-midi
 (define (octavator trace) 
@@ -224,8 +216,7 @@
 (define (oppBool ws index)
   (make-ms (ms-volume ws)
            (list-set (ms-pressed? ws) (+ index (* 13 (ms-rate ws))) (not (IndR ws index)) )
-           (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws))
-  )
+           (ms-Plength ws) (ms-octave ws) (ms-kit ws) (ms-record? ws) (ms-recordlength ws) (ms-rate ws) (ms-tempo ws)))
 
 ;Octav takes in a worldstate and a number
 ;then changes or doesn't change the octave based on the current world
@@ -240,8 +231,7 @@
                        [(equal? funct 0) (- (ms-octave world) 1)]
                        [else (+ (ms-octave world) 1)]
                        )
-                     (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]
-    ))
+                     (ms-kit world) (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]))
 
 ;Vol takes in a worldstate and a number
 ;then changes or doesn't change the volume based on the current world
@@ -286,7 +276,6 @@
                [else (+ (kit-kitnum (ms-kit world)) 1)]
                ))
            (ms-record? world) (ms-recordlength world) (ms-rate world) (ms-tempo world))]))
-
 
 ;Mchg outputs a worldstate with the correct current note and a new note to the song if necessary
 ;WorldState(ms) boolean -> WorldState(ms)
@@ -353,18 +342,18 @@
   (cond
     [(equal? (pstate-p? (ms-Plength world)) #f)
      (cond
-       [(key=? "a" key)  (oppBool world 0)]
-       [(key=? "w" key)  (oppBool world 1)]
-       [(key=? "s" key)  (oppBool world 2)]
-       [(key=? "e" key)  (oppBool world 3)]
-       [(key=? "d" key)  (oppBool world 4)]
-       [(key=? "f" key)  (oppBool world 5)]
-       [(key=? "t" key)  (oppBool world 6)]
-       [(key=? "g" key)  (oppBool world 7)]
-       [(key=? "y" key)  (oppBool world 8)]
-       [(key=? "h" key)  (oppBool world 9)]
-       [(key=? "u" key)  (oppBool world 10)]
-       [(key=? "j" key)  (oppBool world 11)]
+       [(key=? "a" key) (oppBool world 0)]
+       [(key=? "w" key) (oppBool world 1)]
+       [(key=? "s" key) (oppBool world 2)]
+       [(key=? "e" key) (oppBool world 3)]
+       [(key=? "d" key) (oppBool world 4)]
+       [(key=? "f" key) (oppBool world 5)]
+       [(key=? "t" key) (oppBool world 6)]
+       [(key=? "g" key) (oppBool world 7)]
+       [(key=? "y" key) (oppBool world 8)]
+       [(key=? "h" key) (oppBool world 9)]
+       [(key=? "u" key) (oppBool world 10)]
+       [(key=? "j" key) (oppBool world 11)]
        [(key=? "[" key) (octav world 0) ]
        [(key=? "]" key) (octav world 1) ]
        [(key=? "[" key) (octav world 0) ]
@@ -388,7 +377,7 @@
        [(key=? "2" key)
         (cond
           [(equal? (silence 1) (ms-record? world)) world]
-          [else (andplay (ms-record? world) (make-ms (ms-volume world) (ms-pressed? world) (make-pstate #t 0) (ms-octave world) (ms-kit world) (ms-record? world)  (ms-recordlength world) (ms-rate world) (ms-tempo world)))]
+          [else  (make-ms (ms-volume world) (ms-pressed? world) (make-pstate #t 0) (ms-octave world) (ms-kit world) (ms-record? world)  (ms-recordlength world) (ms-rate world) (ms-tempo world))]
           )]
        [else world])]
     [else
@@ -410,7 +399,8 @@
             (make-ms (ms-volume y) (ms-pressed? y) (make-pstate #f 0) (ms-octave y) (ms-kit y) (ms-record? y)  (ms-recordlength y) (ms-rate y) (ms-tempo y)) ]
            [else
             (andplay (ms-record? y) 
-                     (make-ms (ms-volume y) (ms-pressed? y) (make-pstate #t tick) (ms-octave y) (ms-kit y) (ms-record? y)  (ms-recordlength y) (ms-rate y) (ms-tempo y)))    
+                     (make-ms (ms-volume y) (ms-pressed? y) (make-pstate #t tick) (ms-octave y) (ms-kit y) (ms-record? y)  (ms-recordlength y) (ms-rate y) (ms-tempo y))
+                     )   
             ])]))
 
 ;Midi is the big bang function that this program runs on.
