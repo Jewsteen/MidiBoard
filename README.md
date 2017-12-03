@@ -1,6 +1,11 @@
 # MidiBoard Controls:
 ## Select Note to modify:
 > Left and Right Arrow Keys
+### Note color codes:
+> Orange: (silent) currently selected notes
+> Blue: modified selected notes
+> Yellow: (silent) unselected notes
+> Purple: modified unselected notes
 ## Modify Notes played:
 > (A-K) (Q-U) Labeled
 ## Save current track
