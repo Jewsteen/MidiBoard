@@ -124,7 +124,7 @@
 ;oc outputs an key(image) based on a name and position
 ;String Number WorldState -> Image
 (define (oc str num ms)
-  (overlay/xy (rectangle (* 67.5 UIS) (* UIS 210.825) "outline" (colorKey ms num 1)) (* 20 UIS) (* 140 UIS) (text str (* UIS 40) "black")))
+  (overlay/xy (rectangle (* 67.5 UIS) (* UIS 210.825) "outline" (colorKey ms num 1)) (* 20 UIS) (* 140 UIS) (text str (* UIS 20) "black")))
 
 ;defining function RENDER which takes a ms
 ;ms -> ms
@@ -137,28 +137,28 @@
                     (* 300 UIS)               
                     (overlay/xy
                      (beside
-                      (oc "C" 0 ms)
-                      (oc "D" 2 ms)
-                      (oc "E" 4 ms)
-                      (oc "F" 5 ms)
-                      (oc "G" 7 ms)
-                      (oc "A" 9 ms)
-                      (oc "B" 11 ms)
-                      (oc "C" 12 ms))
+                      (oc "C(A)" 0 ms)
+                      (oc "D(S)" 2 ms)
+                      (oc "E(D)" 4 ms)
+                      (oc "F(F)" 5 ms)
+                      (oc "G(G)" 7 ms)
+                      (oc "A(H)" 9 ms)
+                      (oc "B(J)" 11 ms)
+                      (oc "C(K)" 12 ms))
                      0
                      0 
                      (beside
                       (rectangle (* UIS 35) (* UIS 140.5485) "solid" (colorKey ms 0 0))
-                      (underlay/xy (rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 1 1)) 0 (* 60 UIS)(text "C#" (* UIS 20) "white"))
+                      (underlay/xy (rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 1 1)) 0 (* 60 UIS)(text "C#(Q)" (* UIS 15) "white"))
                       (rectangle (* UIS 34.5) (* UIS 140.5485)  "solid" (colorKey ms 2 0))
-                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 3 1))0 (* 60 UIS)(text "D#" (* UIS 20) "white"))
+                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 3 1))0 (* 60 UIS)(text "D#(W)" (* UIS 15) "white"))
                       (rectangle (* UIS 37.5) (* UIS 140.5485)  "solid" (colorKey ms 4 0))
                       (rectangle (* UIS 37.5) (* UIS 140.5485)  "solid" (colorKey ms 5 0))
-                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 6 1))0 (* 60 UIS)(text "F#" (* UIS 20) "white"))
+                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485) "solid" (colorKey ms 6 1))0 (* 60 UIS)(text "F#(R)" (* UIS 15) "white"))
                       (rectangle (* UIS 34.5) (* UIS 140.5485)  "solid" (colorKey ms 7 0))
-                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485 ) "solid" (colorKey ms 8 1))0 (* 60 UIS)(text "G#" (* UIS 20) "white"))
+                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485 ) "solid" (colorKey ms 8 1))0 (* 60 UIS)(text "G#(T)" (* UIS 15) "white"))
                       (rectangle (* UIS 34.5) (* UIS 140.5485)  "solid" (colorKey ms 9 0))
-                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485)  "solid" (colorKey ms 10 1))0 (* 60 UIS)(text "A#" (* UIS 20 )"white"))
+                      (underlay/xy(rectangle (* UIS 43.5) (* UIS 140.5485)  "solid" (colorKey ms 10 1))0 (* 60 UIS)(text "A#(Y)" (* UIS 15 )"white"))
                       (rectangle (* UIS 35) (* UIS 140.5485) "solid" (colorKey ms 11 0))
                       )))
    (* 175 UIS)
@@ -355,6 +355,7 @@
        [(key=? "h" key) (oppBool world 9)]
        [(key=? "u" key) (oppBool world 10)]
        [(key=? "j" key) (oppBool world 11)]
+       [(key=? "k" key) (oppBool world 12)]
        [(key=? "[" key) (octav world 0) ]
        [(key=? "]" key) (octav world 1) ]
        [(key=? "-" key) (vol world 0) ]
@@ -368,7 +369,16 @@
                           [else (make-ms (ms-volume world) (ms-pressed? world) (ms-Plength world) (ms-octave world) (make-kit "vgame" (kit-kitnum (ms-kit world))) (ms-record? world)  (ms-recordlength world) (ms-rate world) (ms-tempo world))])]
        [(key=? "x" key) (kChg world 0) ]      
        [(key=? "c" key) (kChg world 1) ]      
-
+       [(key=? "v" key) (make-ms (ms-volume world) (make-list 52 #f) (make-pstate #f 0) (ms-octave world) (ms-kit world) (silence 1) (ms-recordlength world) 0 (ms-tempo world))]
+       [(key=? "4" key) (make-ms (ms-volume world) (list #f #f #f #f #t #f #f #f #f #f #f #f #f
+                                                         #f #f #f #f #t #f #f #f #f #f #f #f #f
+                                                         #f #f #f #f #f #t #f #f #f #f #f #f #f
+                                                         #f #f #f #f #f #f #f #t #f #f #f #f #f
+                                                         #f #f #f #f #f #f #f #t #f #f #f #f #f
+                                                         #f #f #f #f #f #t #f #f #f #f #f #f #f
+                                                         #f #f #f #f #t #f #f #f #f #f #f #f #f
+                                                         #f #f #t #f #f #f #f #f #f #f #f #f #f
+                                                         ) (make-pstate #f 0) (ms-octave world) (ms-kit world) (silence 1) (ms-recordlength world) 0 (ms-tempo world))]
        [(key=? "escape" key) (exit) ]
        [(key=? "left" key) (Mchg world #f) ]
        [(key=? "right" key) (Mchg world #t) ]
@@ -390,7 +400,7 @@
 ;WorldState -> WorldState
 (define (tock y)
      (cond
-       [(and (not (equal?  (pstate-frames (ms-Plength y)) 0)) (>= (rs-frames (ms-record? y)) (+  (pstate-frames (ms-Plength y)) tick)))
+       [(and (not (equal?  (pstate-frames (ms-Plength y)) 0)) (> (rs-frames (ms-record? y)) (+  (pstate-frames (ms-Plength y)) tick)))
         (make-ms (ms-volume y) (ms-pressed? y) (make-pstate (pstate-p? (ms-Plength y)) (+ (pstate-frames (ms-Plength y)) tick)) (ms-octave y) (ms-kit y) (ms-record? y)  (ms-recordlength y) (ms-rate y) (ms-tempo y))
         ]
        [else
